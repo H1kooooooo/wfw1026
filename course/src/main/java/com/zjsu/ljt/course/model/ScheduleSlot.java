@@ -1,0 +1,30 @@
+package com.zjsu.ljt.course.model;
+
+public class ScheduleSlot {
+    private String dayOfWeek;
+    private String startTime;
+    private String endTime;
+    private int expectedAttendance;
+
+    public ScheduleSlot() {}
+
+    public ScheduleSlot(String dayOfWeek, String startTime, String endTime, int expectedAttendance) {
+        this.dayOfWeek = dayOfWeek;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.expectedAttendance = expectedAttendance;
+    }
+
+    // Getters and Setters
+    public String getDayOfWeek() { return dayOfWeek; }
+    public void setDayOfWeek(String dayOfWeek) { this.dayOfWeek = dayOfWeek; }
+
+    public String getStartTime() { return startTime; }
+    public void setStartTime(String startTime) { this.startTime = startTime; }
+
+    public String getEndTime() { return endTime; }
+    public void setEndTime(String endTime) { this.endTime = endTime; }
+
+    public int getExpectedAttendance() { return expectedAttendance; }
+    public void setExpectedAttendance(int expectedAttendance) { this.expectedAttendance = expectedAttendance; }
+}
