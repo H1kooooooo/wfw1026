@@ -22,9 +22,20 @@ public class Course {
     private String title;
 
     @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "id", column = @Column(name = "instructor_id", length = 50)),
+            @AttributeOverride(name = "name", column = @Column(name = "instructor_name", length = 100)),
+            @AttributeOverride(name = "email", column = @Column(name = "instructor_email", length = 100))
+    })
     private Instructor instructor;
 
     @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "dayOfWeek", column = @Column(name = "day_of_week", length = 20)),
+            @AttributeOverride(name = "startTime", column = @Column(name = "start_time", length = 20)),
+            @AttributeOverride(name = "endTime", column = @Column(name = "end_time", length = 20)),
+            @AttributeOverride(name = "expectedAttendance", column = @Column(name = "expected_attendance"))
+    })
     private ScheduleSlot schedule;
 
     @Column(nullable = false)
@@ -87,6 +98,8 @@ public class Course {
     public void enrollStudent() {
         if (hasAvailableSeats()) {
             enrolled++;
+        } else {
+            throw new RuntimeException("课程容量已满");
         }
     }
 

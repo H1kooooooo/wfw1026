@@ -22,7 +22,7 @@ public class CourseController {
     public ResponseEntity<ApiResponse<List<Course>>> getAllCourses() {
         try {
             List<Course> courses = courseService.getAllCourses();
-            return ResponseEntity.ok(ApiResponse.success(courses));
+            return ResponseEntity.ok(ApiResponse.success(courses, "选课成功"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ApiResponse.error(500, e.getMessage()));
@@ -34,7 +34,7 @@ public class CourseController {
         try {
             Optional<Course> course = courseService.getCourseById(id);
             if (course.isPresent()) {
-                return ResponseEntity.ok(ApiResponse.success(course.get()));
+                return ResponseEntity.ok(ApiResponse.success(course.get(), "选课成功"));
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(ApiResponse.error(404, "课程不存在"));
@@ -50,7 +50,7 @@ public class CourseController {
         try {
             Course createdCourse = courseService.createCourse(course);
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(ApiResponse.success(createdCourse));
+                    .body(ApiResponse.success(createdCourse, "选课成功"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ApiResponse.error(400, e.getMessage()));
@@ -62,7 +62,7 @@ public class CourseController {
         try {
             Optional<Course> updatedCourse = courseService.updateCourse(id, courseDetails);
             if (updatedCourse.isPresent()) {
-                return ResponseEntity.ok(ApiResponse.success(updatedCourse.get()));
+                return ResponseEntity.ok(ApiResponse.success(updatedCourse.get(), "选课成功"));
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(ApiResponse.error(404, "课程不存在"));
@@ -79,7 +79,7 @@ public class CourseController {
             boolean deleted = courseService.deleteCourse(id);
             if (deleted) {
                 return ResponseEntity.status(HttpStatus.NO_CONTENT)
-                        .body(ApiResponse.success(null));
+                        .body(ApiResponse.success(null, "选课成功"));
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(ApiResponse.error(404, "课程不存在"));
@@ -94,7 +94,7 @@ public class CourseController {
     public ResponseEntity<ApiResponse<List<Course>>> getAvailableCourses() {
         try {
             List<Course> courses = courseService.findCoursesWithAvailableSeats();
-            return ResponseEntity.ok(ApiResponse.success(courses));
+            return ResponseEntity.ok(ApiResponse.success(courses, "选课成功"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ApiResponse.error(500, e.getMessage()));
