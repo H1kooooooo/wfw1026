@@ -1,9 +1,20 @@
 package com.zjsu.ljt.course.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+
+@Embeddable
 public class ScheduleSlot {
+    @Column(name = "day_of_week", length = 20)
     private String dayOfWeek;
+
+    @Column(name = "start_time", length = 20)
     private String startTime;
+
+    @Column(name = "end_time", length = 20)
     private String endTime;
+
+    @Column(name = "expected_attendance")
     private int expectedAttendance;
 
     public ScheduleSlot() {}

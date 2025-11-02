@@ -30,7 +30,7 @@ public class CourseController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Course>> getCourseById(@PathVariable String id) {
+    public ResponseEntity<ApiResponse<Course>> getCourseById(@PathVariable Long id) {
         try {
             Optional<Course> course = courseService.getCourseById(id);
             if (course.isPresent()) {
@@ -58,7 +58,7 @@ public class CourseController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<Course>> updateCourse(@PathVariable String id, @RequestBody Course courseDetails) {
+    public ResponseEntity<ApiResponse<Course>> updateCourse(@PathVariable Long id, @RequestBody Course courseDetails) {
         try {
             Optional<Course> updatedCourse = courseService.updateCourse(id, courseDetails);
             if (updatedCourse.isPresent()) {
@@ -74,7 +74,7 @@ public class CourseController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteCourse(@PathVariable String id) {
+    public ResponseEntity<ApiResponse<Void>> deleteCourse(@PathVariable Long id) {
         try {
             boolean deleted = courseService.deleteCourse(id);
             if (deleted) {
@@ -84,6 +84,17 @@ public class CourseController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(ApiResponse.error(404, "课程不存在"));
             }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.error(500, e.getMessage()));
+        }
+    }
+
+    @GetMapping("/available")
+    public ResponseEntity<ApiResponse<List<Course>>> getAvailableCourses() {
+        try {
+            List<Course> courses = courseService.findCoursesWithAvailableSeats();
+            return ResponseEntity.ok(ApiResponse.success(courses));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ApiResponse.error(500, e.getMessage()));

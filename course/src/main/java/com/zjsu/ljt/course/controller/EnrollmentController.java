@@ -20,10 +20,10 @@ public class EnrollmentController {
     private EnrollmentService enrollmentService;
 
     @PostMapping
-    public ResponseEntity<Map<String, Object>> enrollStudent(@RequestBody Map<String, String> request) {
+    public ResponseEntity<Map<String, Object>> enrollStudent(@RequestBody Map<String, Object> request) {
         try {
-            String courseId = request.get("courseId");
-            String studentId = request.get("studentId");
+            Long courseId = Long.valueOf(request.get("courseId").toString());
+            String studentId = request.get("studentId").toString();
 
             if (courseId == null || studentId == null) {
                 return ResponseEntity.badRequest().body(createErrorResponse(400, "课程ID和学生ID不能为空"));
@@ -55,7 +55,7 @@ public class EnrollmentController {
     }
 
     @GetMapping("/course/{courseId}")
-    public ResponseEntity<Map<String, Object>> getEnrollmentsByCourse(@PathVariable String courseId) {
+    public ResponseEntity<Map<String, Object>> getEnrollmentsByCourse(@PathVariable Long courseId) {
         List<Enrollment> enrollments = enrollmentService.findByCourseId(courseId);
 
         Map<String, Object> response = new HashMap<>();
@@ -79,7 +79,7 @@ public class EnrollmentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> deleteEnrollment(@PathVariable String id) {
+    public ResponseEntity<Map<String, Object>> deleteEnrollment(@PathVariable Long id) {
         Optional<Enrollment> enrollment = enrollmentService.findById(id);
         if (enrollment.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -94,6 +94,28 @@ public class EnrollmentController {
         response.put("data", null);
 
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/withdraw")
+    public ResponseEntity<Map<String, Object>> withdrawCourse(@RequestBody Map<String, Object> request) {
+        try {
+            Long courseId = Long.valueOf(request.get("courseId").toString());
+            String studentId = request.get("studentId").toString();
+
+            boolean withdrawn = enrollmentService.withdrawByCourseAndStudent(courseId, studentId);
+            if (withdrawn) {
+                Map<String, Object> response = new HashMap<>();
+                response.put("code", 200);
+                response.put("message", "退课成功");
+                response.put("data", null);
+                return ResponseEntity.ok(response);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(createErrorResponse(404, "选课记录不存在"));
+            }
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(createErrorResponse(400, e.getMessage()));
+        }
     }
 
     private Map<String, Object> createErrorResponse(int code, String message) {

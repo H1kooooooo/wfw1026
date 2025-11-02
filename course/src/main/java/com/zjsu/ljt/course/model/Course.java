@@ -1,32 +1,59 @@
 package com.zjsu.ljt.course.model;
 
+import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "courses", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "code")
+})
 public class Course {
-    private String id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true, length = 50)
     private String code;
+
+    @Column(nullable = false, length = 200)
     private String title;
+
+    @Embedded
     private Instructor instructor;
+
+    @Embedded
     private ScheduleSlot schedule;
+
+    @Column(nullable = false)
     private int capacity;
-    private int enrolled;
 
-    public Course() {
-        this.enrolled = 0;
-    }
+    private int enrolled = 0;
 
-    public Course(String id, String code, String title, Instructor instructor,
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    public Course() {}
+
+    public Course(String code, String title, Instructor instructor,
                   ScheduleSlot schedule, int capacity) {
-        this.id = id;
         this.code = code;
         this.title = title;
         this.instructor = instructor;
         this.schedule = schedule;
         this.capacity = capacity;
-        this.enrolled = 0;
     }
 
     // Getters and Setters
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
     public String getCode() { return code; }
     public void setCode(String code) { this.code = code; }
@@ -45,6 +72,12 @@ public class Course {
 
     public int getEnrolled() { return enrolled; }
     public void setEnrolled(int enrolled) { this.enrolled = enrolled; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 
     // 业务方法
     public boolean hasAvailableSeats() {

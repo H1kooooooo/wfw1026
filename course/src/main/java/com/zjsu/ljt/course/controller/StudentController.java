@@ -30,7 +30,7 @@ public class StudentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Student>> getStudentById(@PathVariable String id) {
+    public ResponseEntity<ApiResponse<Student>> getStudentById(@PathVariable Long id) {
         try {
             Optional<Student> student = studentService.getStudentById(id);
             if (student.isPresent()) {
@@ -84,7 +84,7 @@ public class StudentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<Student>> updateStudent(@PathVariable String id, @RequestBody Student studentDetails) {
+    public ResponseEntity<ApiResponse<Student>> updateStudent(@PathVariable Long id, @RequestBody Student studentDetails) {
         try {
             // 验证必填字段
             if (studentDetails.getStudentId() == null || studentDetails.getName() == null ||
@@ -110,7 +110,7 @@ public class StudentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteStudent(@PathVariable String id) {
+    public ResponseEntity<ApiResponse<Void>> deleteStudent(@PathVariable Long id) {
         try {
             boolean deleted = studentService.deleteStudent(id);
             if (deleted) {

@@ -1,49 +1,29 @@
 package com.zjsu.ljt.course.repository;
 
 import com.zjsu.ljt.course.model.Student;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
-public class StudentRepository {
-    private final Map<String, Student> students = new ConcurrentHashMap<>();
-    private final Map<String, Student> studentsByStudentId = new ConcurrentHashMap<>();
+public interface StudentRepository extends JpaRepository<Student, Long> {
 
-    public List<Student> findAll() {
-        return new ArrayList<>(students.values());
-    }
+    Optional<Student> findByStudentId(String studentId);
 
-    public Optional<Student> findById(String id) {
-        return Optional.ofNullable(students.get(id));
-    }
+    Optional<Student> findByEmail(String email);
 
-    public Optional<Student> findByStudentId(String studentId) {
-        return students.values().stream()
-                .filter(s -> s.getStudentId().equals(studentId))
-                .findFirst();
-    }
+    List<Student> findByMajor(String major);
 
-    public Student save(Student student) {
-        students.put(student.getId(), student);
-        studentsByStudentId.put(student.getStudentId(), student);
-        return student;
-    }
+    List<Student> findByGrade(Integer grade);
 
-    public void deleteById(String id) {
-        Student student = students.get(id);
-        if (student != null) {
-            studentsByStudentId.remove(student.getStudentId());
-            students.remove(id);
-        }
-    }
+    @Query("SELECT s FROM Student s WHERE s.major = :major AND s.grade = :grade")
+    List<Student> findByMajorAndGrade(@Param("major") String major, @Param("grade") Integer grade);
 
-    public boolean existsById(String id) {
-        return students.containsKey(id);
-    }
+    boolean existsByStudentId(String studentId);
 
-    public boolean existsByStudentId(String studentId) {
-        return studentsByStudentId.containsKey(studentId);
-    }
+    boolean existsByEmail(String email);
 }
